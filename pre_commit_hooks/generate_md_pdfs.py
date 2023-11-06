@@ -17,9 +17,9 @@ def convert_to_pdf_with_marp(filename: str, css_template: str | None) -> bool:
     result = subprocess.run(command, capture_output=True)
     if result.returncode != 0:
         print(f'Error converting {filename} to PDF:\n{result.stderr.decode()}')
-        return False
+        return None
     print(f'Successfully converted {filename} to {output_file}')
-    return True
+    return output_file
 
 def process_markdown_files(filenames: Sequence[str], pattern: str | None, css_template: str | None) -> int:
     """
@@ -28,11 +28,19 @@ def process_markdown_files(filenames: Sequence[str], pattern: str | None, css_te
     regex = re.compile(pattern) if pattern else None
     return_code = 0
 
+    converted_files = []
     for filename in filenames:
         if filename.endswith('.md') and (not regex or regex.search(filename)):
             print(f'Converting {filename} to PDF with custom CSS template...')
-            if not convert_to_pdf_with_marp(filename, css_template):
+            converted_file = convert_to_pdf_with_marp(filename, css_template)
+            if converted_file:
+                converted_files.append(converted_file)
+            else:
                 return_code = 1
+    
+    if converted_files:
+        subprocess.run(['git', 'add'] + converted_files)
+    return return_code
 
     return return_code
 
