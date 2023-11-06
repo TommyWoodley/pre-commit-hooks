@@ -10,6 +10,12 @@
     entry: check-ast
     language: python
     types: [python]
+-   id: generate-md-pdfs
+    name: generate markdown pdfs
+    description: generate pdfs of markdowns changed
+    entry: generate-md-pdfs
+    language: python
+    types: [markdown]
 -   id: check-byte-order-marker
     name: 'check BOM - deprecated: use fix-byte-order-marker'
     description: forbids files which have a utf-8 byte-order marker.
